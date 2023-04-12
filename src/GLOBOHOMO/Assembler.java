@@ -15,31 +15,45 @@ public class Assembler implements Runnable{
     @Override
     public void run() {
         Random rand = new Random();
-
-        if(theQ.lockingMechanism.tryLock()){
-            theQ.lockingMechanism.lock();
-            try {
-                theQ.produce(2);
-            } catch (Exception e){
-                System.out.println(e);
-            }
-            System.out.println("Producing " +  2);
-            theQ.lockingMechanism.unlock();
+        int[] nums = new int[10];
+        for(int i = 0; i < nums.length; i++){
+            nums[i] = rand.nextInt();
         }
-        else {
-            try {
-                Thread.sleep(10);
-            } catch (InterruptedException e) {
+        int i = 0;
+        while(i < 10) {
+            if (theQ.lockingMechanism.tryLock()) {
+                theQ.lockingMechanism.lock();
+                try {
+                    theQ.produce(nums[i]);
+                    System.out.println("Producing " + nums[i]);
+                    i++;
+                } catch (Exception e) {
+                    System.out.println(e);
+                    System.out.println("Letting go for now in assembler, queue full");
+                    theQ.lockingMechanism.unlock();
+                    try {
+                        Thread.sleep(rand.nextInt(10));
+                    } catch (InterruptedException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
+                theQ.lockingMechanism.unlock();
+            } else {
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            try{
+                Thread.sleep(rand.nextInt(50));
+            }catch (InterruptedException e){
                 throw new RuntimeException(e);
             }
+            System.out.println("Job done!");
         }
 
-        try{
-            Thread.sleep(rand.nextInt(50));
-        }catch (InterruptedException e){
-            throw new RuntimeException(e);
-        }
-        System.out.println("Job done!");
 
     }
 }
