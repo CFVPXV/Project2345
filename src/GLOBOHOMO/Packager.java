@@ -17,9 +17,7 @@ public class Packager implements Runnable{
         int returnedValue;
         Random rand = new Random();
         if(iQ.lockingMechanism.tryLock()){
-            iQ.lockingMechanism.lock();
             if(sQ.lockingMechanism.tryLock()){
-                sQ.lockingMechanism.lock();
                 try {
                     returnedValue = iQ.consume();
                     System.out.println("Using " + returnedValue);
@@ -28,6 +26,7 @@ public class Packager implements Runnable{
                     sQ.produce(pack);
                     sQ.lockingMechanism.unlock();
                 } catch (Exception e) {
+                    System.out.println("Holdup!");
                     try {
                         Thread.sleep(10);
                     } catch (InterruptedException ex) {

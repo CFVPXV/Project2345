@@ -22,10 +22,10 @@ public class Assembler implements Runnable{
         int i = 0;
         while(i < 10) {
             if (theQ.lockingMechanism.tryLock()) {
-                theQ.lockingMechanism.lock();
                 try {
                     theQ.produce(nums[i]);
                     System.out.println("Producing " + nums[i]);
+                    theQ.lockingMechanism.unlock();
                     i++;
                 } catch (Exception e) {
                     System.out.println(e);
@@ -37,7 +37,6 @@ public class Assembler implements Runnable{
                         throw new RuntimeException(ex);
                     }
                 }
-                theQ.lockingMechanism.unlock();
             } else {
                 try {
                     Thread.sleep(10);
@@ -53,7 +52,6 @@ public class Assembler implements Runnable{
             }
             System.out.println("Job done!");
         }
-
 
     }
 }

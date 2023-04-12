@@ -5,15 +5,17 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class ps_queue<T>{
 
-    T data[];
-    public ReentrantLock lockingMechanism;
+    public T data[];
+    public static ReentrantLock lockingMechanism;
     int productionIndex;
     int consumerIndex;
+    int size;
 
     ps_queue(){
         data = (T[]) new Object[10];
         productionIndex = 0;
         consumerIndex = 0;
+        size = 0;
         lockingMechanism = new ReentrantLock();
     }
 
@@ -28,8 +30,8 @@ public class ps_queue<T>{
         }
 
         data[productionIndex] = parm;
-
-        productionIndex = (productionIndex + 1) % ((productionIndex - consumerIndex) * -1);
+        size++;
+        productionIndex = (productionIndex + 1) % size;
 
     }
 
@@ -41,8 +43,8 @@ public class ps_queue<T>{
         }
 
         T ret = data[consumerIndex];
-
-        consumerIndex = (consumerIndex + 1) % ((productionIndex - consumerIndex) * -1);
+        size--;
+        consumerIndex = (consumerIndex + 1) % size;
 
         return ret;
 

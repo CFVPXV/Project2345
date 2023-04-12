@@ -13,12 +13,12 @@ public class Shipper implements Runnable{
     public void run() {
         String stringEater;
         if(sQ.lockingMechanism.tryLock()){
-            sQ.lockingMechanism.lock();
             try {
                 stringEater = sQ.consume();
                 System.out.println("Shipping " + stringEater);
                 sQ.lockingMechanism.unlock();
             } catch (Exception e) {
+                System.out.println("Holdup!");
                 System.out.println(e);
                 sQ.lockingMechanism.unlock();
             }
