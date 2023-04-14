@@ -1,4 +1,4 @@
-package GLOBOHOMO;
+package projQueue;
 
 public class main {
 
@@ -13,28 +13,7 @@ public class main {
         factory[1] = new Thread(new Packager(iQueue, sQueue));
         factory[2] = new Thread(new Shipper(sQueue));
 
-        factory[0].start();
-        factory[1].start();
-        factory[2].start();
-
-        try {
-            factory[0].join();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        try {
-            factory[1].join();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        try {
-            factory[2].join();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-
-
-        /*for(int i = 0; i < factory.length; i++){
+        for(int i = 0; i < factory.length; i++){
             factory[i].start();
         }
         for(int i =0; i < factory.length; i ++) {
@@ -46,7 +25,7 @@ public class main {
             {
                 System.out.println("Thread exception: "+e.getMessage());
             }
-        }*/
+        }
 
     }
 }

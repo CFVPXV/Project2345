@@ -1,4 +1,4 @@
-package GLOBOHOMO;
+package projQueue;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -6,7 +6,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class ps_queue<T>{
 
     public T data[];
-    public static ReentrantLock lockingMechanism;
+    public Lock lockingMechanism;
     int productionIndex;
     int consumerIndex;
     int size;
@@ -15,36 +15,28 @@ public class ps_queue<T>{
         data = (T[]) new Object[10];
         productionIndex = 0;
         consumerIndex = 0;
-        size = 0;
         lockingMechanism = new ReentrantLock();
     }
 
-    void produce(T parm) throws Exception{
-
-        System.out.println(productionIndex);
-        System.out.println(consumerIndex);
+    void produce(T parm) throws InterruptedException{
 
         if(productionIndex == (consumerIndex - 1)){
-            System.out.println("produce");
-            throw new Exception("Queue full");
+            throw new InterruptedException("Queue full");
         }
 
         data[productionIndex] = parm;
-        size++;
-        productionIndex = (productionIndex + 1) % size;
+        productionIndex = (productionIndex + 1) % data.length;
 
     }
 
     T consume() throws Exception{
 
         if(consumerIndex == productionIndex){
-            System.out.println("consume");
-            throw new Exception("Queue full");
+            throw new Exception("Queue empty");
         }
 
         T ret = data[consumerIndex];
-        size--;
-        consumerIndex = (consumerIndex + 1) % size;
+        consumerIndex = (consumerIndex + 1) % data.length;
 
         return ret;
 
